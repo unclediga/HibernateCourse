@@ -1,36 +1,20 @@
+DROP TABLE IF EXISTS Book;
+DROP TABLE IF EXISTS Author;
+DROP SEQUENCE IF EXISTS hibernate_seq;
+
+CREATE SEQUENCE hibernate_seq START WITH 100;
+
 CREATE TABLE Author
 (
-    id   bigint,
-    name character varying
+    id          bigint PRIMARY KEY DEFAULT nextval('hibernate_seq'),
+    name        character varying,
+    second_name character varying
 );
 
 CREATE TABLE Book
 (
-    id        bigint,
+    id        bigint PRIMARY KEY DEFAULT nextval('hibernate_seq'),
     name      character varying,
-    author_id bigint
+    author_id bigint,
+    FOREIGN KEY (author_id) REFERENCES author (id) ON DELETE CASCADE
 );
-
-insert into Author
-values (1, 'Author 1');
-insert into Author
-values (2, 'Author 2');
-insert into Author
-values (3, 'Author 3');
-insert into Author
-values (4, 'Author NIL');
-
-insert into Book
-values (11, 'Book 11 (Author 1)', 1);
-insert into Book
-values (12, 'Book 12 (Author 1)', 1);
-insert into Book
-values (13, 'Book 13 (Author 1)', 1);
-
-insert into Book
-values (21, 'Book 21 (Author 2)', 2);
-insert into Book
-values (22, 'Book 22 (Author 2)', 2);
-
-insert into Book
-values (33, 'Book 33 (Author 3)', 3);

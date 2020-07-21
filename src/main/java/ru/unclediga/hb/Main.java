@@ -1,6 +1,8 @@
-import entity.Author;
+package ru.unclediga.hb;
+
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+import ru.unclediga.hb.entity.Author;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
