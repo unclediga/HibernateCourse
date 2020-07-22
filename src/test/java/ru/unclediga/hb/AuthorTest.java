@@ -119,8 +119,71 @@ public class AuthorTest {
         Assert.assertEquals(2, authors.size());
         long count = authors.stream().filter(it -> it.getId() != 3 && it.getId() != 4).count();
         Assert.assertEquals(0L, count);
+        getCountAndPrintAll();
+    }
+
+    @Test
+    public void deleteAuthor() {
+        Author author = session.get(Author.class, 2L);
+        session.delete(author);
+        author = session.get(Author.class, 2L);
+        Assert.assertNull(author);
+        int count = getCountAndPrintAll();
+        Assert.assertEquals(4, count); // delete not visible
+
+        session.clear();
+
+        author = session.get(Author.class, 2L);
+        session.beginTransaction();
+        session.delete(author);
+        author = session.get(Author.class, 2L);
+        Assert.assertNull(author);
+        count = getCountAndPrintAll();
+        Assert.assertEquals(3, count); // delete visible
+        session.getTransaction().rollback();
+//
+//
+//
+//        session.flush();
+//        count = getCountAndPrintAll();
+//        Assert.assertEquals(2, count);
+//        session.getTransaction().rollback();
+    }
+
+    @Test
+    public void deleteAuthorCriteriaAPI() {
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaDelete<Author> dc = builder.createCriteriaDelete(Author.class);
+
+        Root<Author> root = dc.from(Author.class);
+
+        ParameterExpression<Integer> lengthParam = builder.parameter(Integer.class, "length");
+        ParameterExpression<Long> idParam = builder.parameter(Long.class, "id");
+        Expression<Integer> length = builder.length(root.get("name"));
+
+        dc
+                .where(
+                        builder.and(
+                                builder.greaterThan(length, lengthParam),
+                                builder.greaterThan(root.get("id"), idParam)));
+
+        Query query = session.createQuery(dc);
+        query.setParameter("length", 5);
+        query.setParameter("id", 2L);
+        session.beginTransaction();
+        // == Update/Delete Criteria required transaction ==
+        int count = query.executeUpdate();
+        Assert.assertEquals(2, count);
+        getCountAndPrintAll();
+        session.getTransaction().rollback();
+    }
+
+    private int getCountAndPrintAll() {
+        Query<Author> query = session.createQuery("select a from Author a", Author.class);
+        List<Author> authors = query.getResultList();
         for (Author author : authors) {
-            System.out.println(author);
+            System.out.println("MY: " + author);
         }
+        return authors.size();
     }
 }
