@@ -6,6 +6,7 @@ import org.hibernate.query.Query;
 import org.junit.*;
 import ru.unclediga.JdbcUtil;
 import ru.unclediga.hb.entity.Author;
+import ru.unclediga.hb.entity.Book;
 
 import javax.persistence.criteria.*;
 import java.util.List;
@@ -40,6 +41,20 @@ public class AuthorTest {
         Author author = session.get(Author.class, 1L);
         Assert.assertEquals(author.getName(), "Author 1");
         Assert.assertEquals(author.getSecondName(), "Author 1 SCD");
+        System.out.println("MY: " + author);
+    }
+
+    @Test
+    public void getAuthorWithBooks() {
+        Author author = session.get(Author.class, 1L);
+        Assert.assertEquals(author.getName(), "Author 1");
+        Assert.assertEquals(author.getSecondName(), "Author 1 SCD");
+        // StackOverFlow,  if books are included into toString()
+        // Author -> Books -> book.author -> Author -> Books.book -> author...
+        System.out.println("MY: " + author);
+        for (Book book : author.getBooks()) {
+            System.out.println("MY:(" + book.getClass().getName() + ")" + book);
+        }
     }
 
     @Test

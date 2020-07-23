@@ -36,6 +36,9 @@ public class BookTest {
     @Test
     public void getBook() {
         Book book = session.get(Book.class, 11L);
+        // StackOverFlow,  if author is included into toString()
+        // Book -> book.author -> Author -> Books -> book -> author...
+        System.out.println("MY:" + book);
         Assert.assertNotNull(book);
         Assert.assertEquals("Book 11 (Author 1)", book.getName());
         Assert.assertNotNull(book.getAuthor());

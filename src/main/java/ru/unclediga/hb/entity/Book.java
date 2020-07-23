@@ -66,11 +66,13 @@ public class Book implements Serializable {
 
     @Override
     public String toString() {
+        // StackOverFlow,  if author is included into toString()
+        // Book -> book.author -> Author -> Books -> book -> author...
         return "Book{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", author_id=" + author_id +
-                ", author=" + author +
+                ", author= " + (author != null ? "{id=" + author.getId() + ",name=" + author.getName() : "null") +
                 '}';
     }
 }
