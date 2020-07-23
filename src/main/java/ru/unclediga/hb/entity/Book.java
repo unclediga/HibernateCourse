@@ -3,10 +3,7 @@ package ru.unclediga.hb.entity;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
@@ -19,7 +16,13 @@ public class Book implements Serializable {
 
     private String name;
 
+    @Transient
     private long author_id;
+
+    @ManyToOne
+//    @JoinColumn  (Hiber will get default -> author_id)
+//    @JoinColumn(name="author_id") -> explicitly set name
+    private Author author;
 
     public Book() {
     }
@@ -27,6 +30,14 @@ public class Book implements Serializable {
     public Book(String name, long author_id) {
         this.name = name;
         this.author_id = author_id;
+    }
+
+    public Author getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(Author author) {
+        this.author = author;
     }
 
     public long getId() {
@@ -51,5 +62,15 @@ public class Book implements Serializable {
 
     public void setAuthor_id(long author_id) {
         this.author_id = author_id;
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", author_id=" + author_id +
+                ", author=" + author +
+                '}';
     }
 }
